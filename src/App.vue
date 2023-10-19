@@ -1,24 +1,45 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const showModal = ref(false)
+const noteContent = ref("")
+const notes = ref([{
+    id: 1,
+    content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet quod dolorum laboriosam perspiciatis distinctio vitae!",
+    date: "23/11/23"
+}])
+
+const addNewNote = () => {
+    notes.value.push({
+        id: Math.floor(Math.random() * 1000),
+        content: noteContent.value,
+        date: new Date().toLocaleDateString()
+    })
+    showModal.value = false
+    noteContent.value = ""
+}
+</script>
+
 <template>
-    <div class="overlay">
+    <div v-if="showModal" class="overlay">
         <div class="modal">
-            <textarea name="note" id="" cols="30" rows="10"></textarea>
+            <textarea v-model.trim="noteContent" name="note" id="" cols="30" rows="10"></textarea>
             <div class="buttons">
-                <button class="save">Save</button>
-                <button class="close">Close</button>
+                <button class="save" @click="addNewNote">Save</button>
+                <button class="close" @click="showModal = false">Close</button>
             </div>
         </div>
     </div>
     <div class="container">
         <div class="header">
             <h2>Notes</h2>
-            <button>+</button>
+            <button @click="showModal = true">+</button>
         </div>
 
         <div class="note-container">
-            <div class="card">
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet quod dolorum laboriosam perspiciatis
-                    distinctio vitae!</p>
-                <p class="date">19/10/23</p>
+            <div class="card" v-for="note in notes" :key="note.id">
+                <p>{{ note.content }}</p>
+                <p class="date">{{ note.date }}</p>
             </div>
         </div>
     </div>
@@ -48,11 +69,18 @@
     width: 40px;
     border: none;
     font-size: 24px;
+    cursor: pointer;
+}
+
+.note-container {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .card {
     width: 40%;
     margin-top: 20px;
+    margin-right: 20px;
     padding: 20px 14px;
     background-color: #23dcff;
     color: #000;
@@ -96,11 +124,14 @@ textarea {
     border: 2px solid #456db4;
     font-size: 16px;
     resize: none;
+    padding: 5px;
 }
+
 .buttons {
     display: flex;
     justify-content: end;
 }
+
 .buttons .save {
     background-color: #456db4;
     color: #fff;
@@ -108,12 +139,15 @@ textarea {
     padding: 10px 20px;
     border-radius: 5px;
     margin-right: 10px;
+    cursor: pointer;
 }
+
 .buttons .close {
     background-color: #fff;
     color: #456db4;
     border: 2px solid #456db4;
     padding: 10px 20px;
     border-radius: 5px;
+    cursor: pointer;
 }
 </style>
